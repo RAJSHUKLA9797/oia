@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 
 //routes import
+const taskRoute = require("./routes/taskRoute");
+const subtaskRoute = require("./routes/subTaskRoutes");
 
 const app = express();
 const bodyParser = require("body-parser");
@@ -18,6 +20,8 @@ mongoose
   .catch((err) => console.log("error connecting to mongodb" + err));
 
 ///routes
+app.use("/api", taskRoute);
+app.use("/api", subtaskRoute);
 
 app.get("/", (req, res) => {
   res.send("Looks fine, now check the other routes!");
