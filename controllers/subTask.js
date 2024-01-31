@@ -1,4 +1,4 @@
-// const Task = require("../schemas/task");
+const Task = require("../schemas/task");
 const Subtask = require("../schemas/subtask");
 //create task
 exports.createSubTask = async (req, res) => {
@@ -15,3 +15,17 @@ exports.createSubTask = async (req, res) => {
       console.error(error);
     });
 };
+//get subtask
+exports.getAllSubTask = async (req, res) => {
+  try {
+    const { taskId } = req.body;
+    const allSubtask = await Subtask.find({ taskId });
+    res.status(200).send(allSubtask);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+//update subtask
+
+//delete task
