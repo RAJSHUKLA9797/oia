@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const { checkToken } = require("../middleware");
 
 const {
   createTask,
@@ -15,7 +16,7 @@ const taskRoute = express();
 taskRoute.use(express.json());
 taskRoute.use(bodyParser.urlencoded({ extended: true }));
 //routes
-taskRoute.post("/createTask", createTask);
+taskRoute.post("/createTask", checkToken, createTask);
 taskRoute.post("/getTaskByPriority", getTaskByPriority);
 taskRoute.post("/getTaskByDueDate", getTaskByDueDate);
 taskRoute.post("/updateTaskByDueDate", updateTaskByDueDate);

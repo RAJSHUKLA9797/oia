@@ -1,24 +1,39 @@
 const Task = require("../schemas/task");
 const SubTask = require("../schemas/subtask");
 const Subtask = require("../schemas/subtask");
+const jwt = require("jsonwebtoken");
+
 //create task
 exports.createTask = async (req, res) => {
-  const { title, description, dueDate } = req.body;
-  const newTask = new Task({
-    title: title,
-    description: description,
-    dueDate: dueDate,
-    priority: 0,
-    status: "TODO",
-  });
-  newTask
-    .save()
-    .then(() => {
-      res.status(200).send("Task Created");
-    })
-    .catch((error) => {
-      console.error(error);
+  try {
+    // to be replaced from env file
+    jwt.verify(req.token, "mykey", (err, authorizedData) => {
+      if (err) {
+        res.status(403).json({
+          message: "protected Route",
+        });
+      } else {
+        const { title, description, dueDate } = req.body;
+        const newTask = new Task({
+          title: title,
+          description: description,
+          dueDate: dueDate,
+          priority: 0,
+          status: "TODO",
+        });
+        newTask
+          .save()
+          .then(() => {
+            res.status(200).send("Task Created");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
     });
+  } catch (e) {
+    res.status(401).json({ name: e.name, message: e.message });
+  }
 };
 //getTask by priority
 exports.getTaskByPriority = async (req, res) => {
