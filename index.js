@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
-
+const cron = require("node-cron");
+const cronJob = require("./cronJob");
 //routes import
 const taskRoute = require("./routes/taskRoute");
 const subtaskRoute = require("./routes/subTaskRoutes");
@@ -16,7 +17,14 @@ app.use(bodyParser.json());
 const DB_URL = "mongodb://127.0.0.1:27017/openInApp";
 mongoose
   .connect(DB_URL, { useNewUrlParser: true })
-  .then(() => console.log("database connected successfully"))
+  .then(() => {
+    console.log("database connected successfully");
+
+    cron.schedule("0 10 * * *", () => {
+      // cronJob();//will start the schedule processs
+      cronJob();
+    });
+  })
   .catch((err) => console.log("error connecting to mongodb" + err));
 
 ///routes

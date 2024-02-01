@@ -27,5 +27,56 @@ exports.getAllSubTask = async (req, res) => {
 };
 
 //update subtask
+exports.updateSubtask = async (req, res) => {
+  try {
+    const { subtaskId, status } = req.body;
+    const subTask = await Subtask.findById(subtaskId);
+    subTask.status = status;
+    await subTask.save();
+    const taskId = subTask.taskId;
+    const allSubtasks = await Subtask.find();
+    var fl = 1;
+    for (let subtask in allSubtasks) {
+      if (subtask.taskId == taskId) {
+        if (subTask.status == 0) {
+          fl = 0;
+          break;
+        }
+      }
+    }
+    if (fl == 1) {
+      const Task = await Task.findById(taskId);
+      Task.status = "DONE";
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 //delete task
+exports.deleteSubtask = async (req, res) => {
+  try {
+    const { subtaskId } = req.body;
+    const subTask = await Subtask.findById(subtaskId);
+    // await subTask.delete();
+
+    const taskId = subTask.taskId;
+    await Subtask.findByIdAndDelete(subtaskId);
+    const allSubtasks = await Subtask.find();
+    var fl = 1;
+    for (let subtask in allSubtasks) {
+      if (subtask.taskId == taskId) {
+        if (subTask.status == 0) {
+          fl = 0;
+          break;
+        }
+      }
+    }
+    if (fl == 1) {
+      const Task = await Task.findById(taskId);
+      Task.status = "DONE";
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
